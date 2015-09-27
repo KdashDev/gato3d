@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"  addedToStage="windowedapplication1_addedToStageHandler(event)" backgroundAlpha="0"  backgroundColor="#000000">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.geom.Vector3D;
+			
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			
+			
+			
+			import away3d.cameras.Camera3D;
+			import away3d.containers.ObjectContainer3D;
+			import away3d.containers.Scene3D;
+			import away3d.containers.View3D;
+			import away3d.entities.Mesh;
+			import away3d.events.MouseEvent3D;
+			import away3d.materials.ColorMaterial;
+			import away3d.primitives.CubeGeometry;
+			import away3d.primitives.SphereGeometry;
+			
+			import utils.GenerarCubo;
+			
+			
+			//engine variables
+			private var _view:View3D;
+			
+			private const _alpha:Number=0;
+			
+			//scene objects
+			private var _Cube:Mesh;
+			
+			private var contenedor:ObjectContainer3D;
+			
+			private var turno:String="cruz";
+			
+			private var idArray:Array;
+			
+			private var numeroJugadas:int=9;
+			private var existe:Boolean;
+			private var contadorTiradas:Number=0;
+			
+			
+			private var combinacion:Array = new Array();
+			
+			private var cg1Horizontal:Array=new Array(1,2,3);
+			private var cg2Horizontal:Array=new Array(4,5,6);
+			private var cg3Horizontal:Array=new Array(7,8,9);
+			
+			private var cg1Vertical:Array=new Array(1,4,7);
+			private var cg2Vertical:Array=new Array(2,5,8);
+			private var cg3Vertical:Array=new Array(3,6,9);
+			
+			private var cg1Cruzada:Array=new Array(1,5,9);
+			private var cg2Cruzada:Array=new Array(3,5,7);
+			
+			
+			private var auxConta:Number=0;
+			
+			
+			private var scene:Scene3D;
+			private var camera:Camera3D;
+			
+			
+			protected function windowedapplication1_addedToStageHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+				
+				//setup the view
+				_view = new View3D();
+				_view.doubleClickEnabled=true;
+				MainVisual.addChild(_view);
+				
+				
+				idArray = new  Array();
+				
+				
+				//setup the camera
+				
+				_view.camera.z = -600;
+				_view.camera.y = 500;
+				_view.camera.lookAt(new Vector3D());
+				_view.forceMouseMove = true;
+				
+				scene = _view.scene;
+				camera = _view.camera;
+				
+				contenedor=new ObjectContainer3D();
+				contenedor.mouseEnabled=true;
+				contenedor.mouseChildren=true;
+				
+				//setup the scene
+				_Cube = new Mesh(new CubeGeometry(400,100,20), new ColorMaterial(0x111199));//azul
+				_Cube.position= new  Vector3D(-20,0,0);
+				_Cube.rotationZ=90;
+				_Cube.rotationX = 90;
+				
+				contenedor.addChild(_Cube);
+				
+				
+				
+				
+				
+				var _Cube2:Mesh = new Mesh(new CubeGeometry(400,100,20), new ColorMaterial(0x111199));//azul
+				_Cube2.position= new  Vector3D(140,0,0);
+				_Cube2.rotationZ=90;
+				_Cube2.rotationX = 90;
+				
+				
+				contenedor.addChild(_Cube2);
+				
+				var _CubeH:Mesh = new Mesh(new CubeGeometry(400,100,20), new ColorMaterial(0x222111));//cafe
+				_CubeH.position= new  Vector3D(50,95,0);
+				_CubeH.rotationX=90;
+				
+				
+				
+				contenedor.addChild(_CubeH);
+				
+				var _CubeH2:Mesh = new Mesh(new CubeGeometry(400,100,20), new ColorMaterial(0x222111));//cafe
+				_CubeH2.position= new  Vector3D(50,-60,0);
+				_CubeH2.rotationX=90;
+				contenedor.addChild(_CubeH2);
+				
+				
+				//Cubos auxiliares
+				
+				
+				//inicio cubos  linea de arriba
+				
+				var  _CubeAux1arriba:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux1arriba.mouseEnabled=true;
+				_CubeAux1arriba.mouseChildren=true;
+				_CubeAux1arriba.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux1arriba.id="1";
+				_CubeAux1arriba.position= new  Vector3D(-90,175,0);
+				
+				contenedor.addChild(_CubeAux1arriba);
+				
+				
+				var  _CubeAux2arriba:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux2arriba.mouseEnabled=true;
+				_CubeAux2arriba.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux2arriba.id="2";
+				_CubeAux2arriba.position= new  Vector3D(55,175,0);
+				contenedor.addChild(_CubeAux2arriba);
+				
+				
+				var  _CubeAux3arriba:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux3arriba.mouseEnabled=true;
+				_CubeAux3arriba.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux3arriba.id="3";
+				_CubeAux3arriba.position= new  Vector3D(215,175,0);
+				
+				contenedor.addChild(_CubeAux3arriba);
+				
+				
+				//fin cubos  linea de arriba
+				
+				
+				//inicio cubos  linea de enmedio
+				
+				var  _CubeAux1:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux1.mouseEnabled=true;
+				_CubeAux1.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux1.id="4";
+				_CubeAux1.position= new  Vector3D(-90,20,0);
+				
+				contenedor.addChild(_CubeAux1);
+				
+				
+				var  _CubeAux2:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux2.mouseEnabled=true;
+				_CubeAux2.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux2.id="5";
+				_CubeAux2.position= new  Vector3D(55,20,0);
+				contenedor.addChild(_CubeAux2);
+				
+				
+				var  _CubeAux3:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux3.mouseEnabled=true;
+				_CubeAux3.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux3.id="6";
+				_CubeAux3.position= new  Vector3D(215,20,0);
+				
+				contenedor.addChild(_CubeAux3);
+				
+				
+				//fin cubos  linea de enmedio
+				
+				
+				
+				//inicio cubos  linea de abajo
+				
+				var  _CubeAux1abajo:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux1abajo.mouseEnabled=true;
+				_CubeAux1abajo.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux1abajo.id="7";
+				_CubeAux1abajo.position= new  Vector3D(-90,-125,0);
+				contenedor.addChild(_CubeAux1abajo);
+				
+				
+				var  _CubeAux2abajo:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux2abajo.mouseEnabled=true;
+				_CubeAux2abajo.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux2abajo.id="8";
+				_CubeAux2abajo.position= new  Vector3D(55,-125,0);
+				contenedor.addChild(_CubeAux2abajo);
+				
+				
+				var  _CubeAux3abajo:GenerarCubo=new GenerarCubo(new CubeGeometry(120,150,100), new ColorMaterial(0x111199,_alpha));//azul
+				_CubeAux3abajo.mouseEnabled=true;
+				_CubeAux3abajo.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseDown3D);
+				_CubeAux3abajo.id="9";
+				_CubeAux3abajo.position= new  Vector3D(215,-125,0);
+				
+				contenedor.addChild(_CubeAux3abajo);
+				
+				
+				//fin cubos  linea de abajo
+				
+				
+				
+				_view.scene.addChild(contenedor);
+				
+				//setup the render loop
+				addEventListener(Event.ENTER_FRAME, _onEnterFrame);
+				stage.addEventListener(Event.RESIZE, onResize);
+				
+				
+				onResize();
+			}
+			
+			
+			
+			private function GenerarXMouse(event:MouseEvent3D):void{
+				
+				if(combinacion.length==0){
+					
+					var _CubeH:Mesh = new Mesh(new CubeGeometry(125,100,20), new ColorMaterial(0x777111));//cafe
+					_CubeH.position= event.target.position;
+					_CubeH.rotationX=90;
+					_CubeH.rotationZ = 45;
+					
+					var _CubeH2:Mesh = new Mesh(new CubeGeometry(125,100,20), new ColorMaterial(0x777111));//cafe
+					_CubeH2.position=event.target.position;
+					_CubeH2.rotationX=90;
+					_CubeH2.rotationZ = -45;
+					
+					var contenedorAux:ObjectContainer3D = new ObjectContainer3D();
+					contenedorAux.id="cruz";
+					
+					contenedorAux.addChild(_CubeH);
+					contenedorAux.addChild(_CubeH2);
+					contenedor.addChild(contenedorAux);
+					
+					
+					
+					
+					var mesh:GenerarCubo= event.object as GenerarCubo ;
+					mesh.Validacion("cruz",event.target.id);
+					existe=true;
+					
+					//trace( mesh.numero + mesh.tipo);
+					
+					var AuxObject:Object= new Object();
+					AuxObject.numero=Number(event.target.id);
+					AuxObject.tipo="cruz";
+					combinacion.push(AuxObject);
+					
+					Ganador();
+					
+					turno="bola";
+					
+					contadorTiradas ++;
+					
+					
+				}else{
+					
+					var _CubeH:Mesh = new Mesh(new CubeGeometry(125,100,20), new ColorMaterial(0x777111));//cafe
+					_CubeH.position= event.target.position;
+					_CubeH.rotationX=90;
+					_CubeH.rotationZ = 45;
+					
+					var _CubeH2:Mesh = new Mesh(new CubeGeometry(125,100,20), new ColorMaterial(0x777111));//cafe
+					_CubeH2.position=event.target.position;
+					_CubeH2.rotationX=90;
+					_CubeH2.rotationZ = -45;
+					
+					var contenedorAux:ObjectContainer3D = new ObjectContainer3D();
+					contenedorAux.id="cruz";
+					
+					contenedorAux.addChild(_CubeH);
+					contenedorAux.addChild(_CubeH2);
+					contenedor.addChild(contenedorAux);
+					
+					
+					
+					
+					var mesh:GenerarCubo= event.object as GenerarCubo ;
+					mesh.Validacion("cruz",event.target.id);
+					existe=true;
+					
+					
+					var AuxObject:Object= new Object();
+					AuxObject.numero=event.target.id;
+					AuxObject.tipo="cruz";
+					combinacion.push(AuxObject);
+					
+					Ganador();
+					
+					turno="bola";
+					
+					
+					contadorTiradas ++;
+					
+				}
+				
+				
+				
+				
+				
+			}
+			
+			private function GenerarOMouse(event:MouseEvent3D):void{
+				
+				var _sphere:Mesh= new Mesh(new SphereGeometry(),new ColorMaterial(0x888111));
+				_sphere.position = event.target.position;
+				_sphere.id="bola";
+				contenedor.addChild(_sphere);
+				
+				var mesh:GenerarCubo= event.object as GenerarCubo ;
+				mesh.Validacion("bola",event.target.id);
+				existe=true;
+				
+				var AuxObject:Object= new Object();
+				AuxObject.numero=event.target.id;
+				AuxObject.tipo="bola";
+				combinacion.push(AuxObject);
+				Ganador();
+				
+				turno="cruz";
+				
+			}
+			
+			
+			
+			private function onMouseDown3D(event:MouseEvent3D):void
+			{
+				
+				existe=false;
+				
+				for(var i:int=0;i<combinacion.length;i++){
+					
+					if(Number(combinacion[i].numero) == Number(event.target.id)){
+						existe=true;
+					}
+					
+				}
+				if(turno =="cruz" && existe==false){
+					GenerarXMouse(event);
+				}else  if(turno =="bola" && existe==false){
+					GenerarOMouse(event);	
+				}
+				
+				
+			}
+			
+			
+			public function  Ganador():void{
+				var mesh2:GenerarCubo= new GenerarCubo(null);
+				
+				var auxcon6:int=0;
+				
+				
+				var cg1contador:Number=0;
+				var cg2contador:Number=0;
+				var cg3contador:Number=0;
+				var cg4contador:Number=0;
+				var cg5contador:Number=0;
+				var cg6contador:Number=0;
+				var cg7contador:Number=0;
+				var cg8contador:Number=0;
+				var cg9contador:Number=0;
+				var cg10contador:Number=0;
+				var cg11contador:Number=0;				
+				var cg12contador:Number=0;
+				var cg13contador:Number=0;
+				var cg14contador:Number=0;
+				var cg15contador:Number=0;
+				var cg16contador:Number=0;
+				
+				
+				
+				var tanterior:String="";
+				if(turno =="cruz"){
+					tanterior="bola";
+				}else  if(turno =="bola"){
+					tanterior="cruz";
+				}
+				
+				
+				for(var ii:int=0;ii<cg1Horizontal.length;ii++){
+					for(var i:int=0;i< combinacion.length;i ++){
+						//trace(combinacion[i].tipo+" "+combinacion[i].numero);
+						if(cg1Horizontal[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg1contador+=Number(combinacion[i].numero);
+							if(cg1contador == 6) Alert.show("Ganador: " +turno);
+						}
+						if(cg1Horizontal[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg2contador+=Number(combinacion[i].numero);
+							if(cg2contador == 6) Alert.show("Ganador: " +turno);
+						}
+						
+						if(cg2Horizontal[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg3contador+=Number(combinacion[i].numero);
+							if(cg3contador == 15) Alert.show("Ganador: " +turno);
+						}
+						if(cg2Horizontal[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg4contador+=Number(combinacion[i].numero);
+							if(cg4contador == 15) Alert.show("Ganador: " +turno);
+						}
+						
+						if(cg3Horizontal[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg5contador+=Number(combinacion[i].numero);
+							if(cg5contador == 24) Alert.show("Ganador: " +turno);
+						}
+						if(cg3Horizontal[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg6contador+=Number(combinacion[i].numero);
+							if(cg6contador == 24) Alert.show("Ganador: " +turno);
+						}
+						
+						if(cg1Vertical[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg7contador+=Number(combinacion[i].numero);
+							if(cg7contador == 12) Alert.show("Ganador: " +turno);
+						}
+						if(cg1Vertical[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg8contador+=Number(combinacion[i].numero);
+							if(cg8contador == 12) Alert.show("Ganador: " +turno);
+						}
+						
+						if(cg2Vertical[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg9contador+=Number(combinacion[i].numero);
+							if(cg9contador == 15) Alert.show("Ganador: " +turno);
+						}
+						if(cg2Vertical[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg10contador+=Number(combinacion[i].numero);
+							if(cg10contador == 15) Alert.show("Ganador: " +turno);
+						}	
+						
+						if(cg3Vertical[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg11contador+=Number(combinacion[i].numero);
+							if(cg11contador == 18) Alert.show("Ganador: " +turno);
+						}
+						if(cg3Vertical[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg12contador+=Number(combinacion[i].numero);
+							if(cg12contador == 18) Alert.show("Ganador: " +turno);
+						}	
+						
+						if(cg1Cruzada[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg13contador+=Number(combinacion[i].numero);
+							if(cg13contador == 15) Alert.show("Ganador: " +turno);
+						}
+						if(cg1Cruzada[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg14contador+=Number(combinacion[i].numero);
+							if(cg14contador == 15) Alert.show("Ganador: " +turno);
+						}
+						if(cg2Cruzada[ii] == combinacion[i].numero && "cruz" == combinacion[i].tipo){
+							cg15contador+=Number(combinacion[i].numero);
+							if(cg15contador == 15) Alert.show("Ganador: " +turno);
+						}
+						if(cg2Cruzada[ii] == combinacion[i].numero && "bola" == combinacion[i].tipo){
+							cg16contador+=Number(combinacion[i].numero);
+							if(cg16contador == 15) Alert.show("Ganador: " +turno);
+						}
+						
+					}
+				}
+				
+			}
+			
+			/**
+			 * render loop
+			 */
+			private function _onEnterFrame(e:Event):void
+			{
+				contenedor.rotationX ++;
+				contenedor.rotationZ ++;
+				_view.render();
+			}
+			
+			/**
+			 * stage listener for resize events
+			 */
+			private function onResize(event:Event = null):void
+			{
+				_view.width = stage.stageWidth;
+				_view.height = stage.stageHeight;
+			}
+			
+			protected function windowedapplication1_closeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				System.gc();
+				removeEventListener(Event.ENTER_FRAME, _onEnterFrame);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:SpriteVisualElement id="MainVisual">
+		
+	</s:SpriteVisualElement>
+</s:WindowedApplication>
